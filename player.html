@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>عرض الهولوجرام</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: block;
+    }
+    /* زرار رجوع صغير وشفاف في الركن، يظهر لثانية عند لمس الشاشة */
+    #backBtn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.35);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      opacity: 0.35;
+      transition: opacity 0.3s;
+    }
+    #backBtn:active { opacity: 1; }
+  </style>
+</head>
+<body>
+  <video id="v" autoplay loop muted playsinline></video>
+  <button id="backBtn" onclick="goBack()">رجوع للكاميرا</button>
+
+  <script>
+    // بياخد اسم الفيديو من الرابط، مثال: player.html?src=horse-molar.mp4
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get("src");
+    const video = document.getElementById("v");
+
+    if (src) {
+      video.src = src;
+      video.play().catch(() => {
+        // بعض المتصفحات بتمنع التشغيل التلقائي، فبنخلي أول لمسة على الشاشة تشغّل الفيديو
+        document.body.addEventListener("click", () => video.play(), { once: true });
+      });
+    }
+
+    // محاولة الدخول في وضع ملء الشاشة الحقيقي (يشيل شريط المتصفح)
+    document.body.addEventListener("click", () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    }, { once: true });
+
+    function goBack() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
